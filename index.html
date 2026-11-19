@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Лист и полка — ссылки для книжной рассылки</title>
+<style>
+  :root{
+    --paper:#F6F1E7;
+    --card:#FFFCF5;
+    --ink:#182E28;
+    --accent:#7A293F;
+    --line:#D5C9B7;
+    --muted:#5E7268;
+    --soft:#EDE4D6;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%}
+  body{
+    background:var(--paper);color:var(--ink);
+    font:16px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .app{max-width:1060px;margin:0 auto;padding:38px 22px 56px}
+
+  header{margin-bottom:26px;border-bottom:1px solid var(--line);padding-bottom:20px}
+  .eyebrow{
+    font-size:12px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin-bottom:8px;
+  }
+  h1,h2,h3{font-family:Georgia,"Times New Roman",serif;font-weight:700;letter-spacing:-.01em}
+  h1{font-size:clamp(34px,5.6vw,48px);line-height:1.1;margin:0 0 6px}
+  .subtitle{margin:0;color:var(--muted);font-size:17px}
+
+  .workspace{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;
+    padding:26px;box-shadow:0 12px 32px rgba(40,50,35,.06);
+  }
+  h2{font-size:24px;margin:0 0 6px}
+  .card-note{margin:0 0 20px;color:var(--muted);font-size:14px}
+  h3{font-size:17px;margin:22px 0 10px}
+
+  .field{margin-bottom:16px}
+  .field label{display:block;font-weight:700;font-size:14px;margin-bottom:6px}
+  .field .hint{display:block;font-size:12px;color:var(--muted);margin-bottom:7px}
+  input[type=text]{
+    width:100%;padding:12px 13px;border:1.5px solid var(--line);border-radius:11px;
+    background:#fff;color:var(--ink);font:inherit;
+  }
+  input[type=text]::placeholder{color:#A99B89}
+  input[type=text]:focus,textarea:focus,button:focus-visible{
+    outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(122,41,63,.14);
+  }
+  input.invalid{border-color:var(--accent);background:#FDF4F5}
+  .error{min-height:19px;margin:5px 0 0;font-size:13px;color:var(--accent);font-weight:600}
+
+  .actions{display:grid;gap:10px;margin-top:20px}
+  button{
+    font:700 14px/1.2 inherit;padding:13px 16px;border-radius:11px;cursor:pointer;
+    transition:.15s ease;border:1.5px solid transparent;
+  }
+  .btn-main{background:var(--accent);color:#fff}
+  .btn-main:hover:not(:disabled){background:#632036}
+  .btn-alt{background:transparent;border-color:var(--line);color:var(--ink)}
+  .btn-alt:hover{background:var(--soft)}
+  button:disabled{background:#C8BCA9;color:#F7F1E7;border-color:transparent;cursor:not-allowed}
+
+  textarea{
+    width:100%;min-height:116px;resize:vertical;padding:13px;
+    border:1.5px solid var(--line);border-radius:11px;background:#fff;
+    color:var(--ink);font:14px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace;
+    overflow-wrap:anywhere;word-break:break-word;user-select:text;-webkit-user-select:text;
+  }
+  textarea::placeholder{color:#A99B89;font-family:inherit}
+  .summary{
+    background:var(--soft);border:1px solid var(--line);border-radius:11px;
+    padding:13px 15px;font-size:14px;min-height:80px;white-space:pre-wrap;
+  }
+  .summary:empty::before{content:"После сборки здесь будут три метки в читаемом виде";color:var(--muted)}
+  .status{min-height:20px;margin:10px 0 0;font-size:13px;color:var(--muted)}
+  .status.ok{color:#25604C;font-weight:600}
+  .status.warn{color:var(--accent);font-weight:600}
+
+  @media (max-width:820px){
+    .app{padding:26px 16px 40px}
+    .workspace{grid-template-columns:1fr}
+    .card{padding:22px}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="eyebrow">Подготовка письма</div>
+    <h1>Лист и полка</h1>
+    <p class="subtitle">Ссылки для книжной рассылки</p>
+  </header>
+
+  <main class="workspace">
+    <section class="card" aria-labelledby="formTitle">
+      <h2 id="formTitle">Исходные данные</h2>
+      <p class="card-note">Вставьте адрес и заполните три метки рассылки.</p>
+
+      <div class="field">
+        <label for="url">Адрес страницы</label>
+        <span class="hint">Полный адрес с http:// или https://. Другие параметры и якорь сохранятся.</span>
+        <input type="text" id="url" placeholder="https://example.com/books?ref=author#series" autocomplete="off">
+        <p class="error" id="urlError" role="alert"></p>
+      </div>
+
+      <div class="field">
+        <label for="source">Источник · utm_source</label>
+        <input type="text" id="source" placeholder="newsletter" autocomplete="off">
+        <p class="error" id="sourceError" role="alert"></p>
+      </div>
+
+      <div class="field">
+        <label for="medium">Канал · utm_medium</label>
+        <input type="text" id="medium" placeholder="email" autocomplete="off">
+        <p class="error" id="mediumError" role="alert"></p>
+      </div>
+
+      <div class="field">
+        <label for="campaign">Кампания · utm_campaign</label>
+        <input type="text" id="campaign" placeholder="november или «осень & книги»" autocomplete="off">
+        <p class="error" id="campaignError" role="alert"></p>
+      </div>
+
+      <div class="actions">
+        <button class="btn-alt" type="button" id="preset">Параметры ноябрьского письма</button>
+        <button class="btn-main" type="button" id="build">Собрать ссылку</button>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="resultTitle">
+      <h2 id="resultTitle">Готовая ссылка</h2>
+      <p class="card-note">Проверьте адрес и сводку меток перед вставкой в письмо.</p>
+
+      <textarea id="result" readonly placeholder="Здесь появится собранный адрес"
+                aria-label="Готовая ссылка"></textarea>
+
+      <h3>Проверьте метки</h3>
+      <div class="summary" id="summary" aria-live="polite"></div>
+
+      <div class="actions">
+        <button class="btn-main" type="button" id="copy" disabled>Скопировать ссылку</button>
+      </div>
+      <p class="status" id="status" aria-live="polite"></p>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const PRESET = { source:"newsletter", medium:"email", campaign:"november" };
+  const FIELDS = [
+    { id:"url",      label:"Адрес страницы" },
+    { id:"source",   label:"Источник" },
+    { id:"medium",   label:"Канал" },
+    { id:"campaign", label:"Кампания" }
+  ];
+
+  const $ = id => document.getElementById(id);
+  let builtLink = "";
+
+  function clearError(id){
+    $(id).classList.remove("invalid");
+    $(id + "Error").textContent = "";
+  }
+
+  function setError(id, message){
+    $(id).classList.add("invalid");
+    $(id + "Error").textContent = message;
+  }
+
+  function clearStatus(){
+    $("status").textContent = "";
+    $("status").className = "status";
+  }
+
+  function clearResult(){
+    $("result").value = "";
+    $("summary").textContent = "";
+    $("copy").disabled = true;
+    builtLink = "";
+    clearStatus();
+  }
+
+  function readValue(id){ return $(id).value.trim(); }
+
+  function build(){
+    FIELDS.forEach(f => clearError(f.id));
+    clearResult();
+
+    const values = {};
+    let firstBad = null;
+    FIELDS.forEach(f => {
+      values[f.id] = readValue(f.id);
+      if (!values[f.id] && !firstBad) firstBad = f;
+    });
+
+    if (firstBad){
+      setError(firstBad.id, firstBad.id === "url"
+        ? "Вставьте полный адрес страницы"
+        : "Заполните это поле перед сборкой");
+      return;
+    }
+
+    let url;
+    try { url = new URL(values.url); }
+    catch (e) {
+      setError("url", "Нужен полный адрес с http:// или https://");
+      return;
+    }
+    if (url.protocol !== "http:" && url.protocol !== "https:"){
+      setError("url", "Нужен полный адрес с http:// или https://");
+      return;
+    }
+
+    const params = url.searchParams;
+    params.delete("utm_source");
+    params.delete("utm_medium");
+    params.delete("utm_campaign");
+    params.append("utm_source", values.source);
+    params.append("utm_medium", values.medium);
+    params.append("utm_campaign", values.campaign);
+    url.search = params.toString();
+
+    builtLink = url.toString();
+    $("result").value = builtLink;
+    $("summary").textContent =
+      "Источник · utm_source: " + values.source + "\n" +
+      "Канал · utm_medium: " + values.medium + "\n" +
+      "Кампания · utm_campaign: " + values.campaign;
+    $("copy").disabled = false;
+  }
+
+  async function copyLink(){
+    if (!builtLink) return;
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(builtLink);
+      ok = true;
+    } catch (e) {
+      const ta = document.createElement("textarea");
+      ta.value = builtLink;
+      ta.style.position = "fixed";
+      ta.style.top = "-1000px";
+      document.body.appendChild(ta);
+      ta.select();
+      try { ok = document.execCommand("copy"); } catch (_) {}
+      ta.remove();
+    }
+    const status = $("status");
+    if (ok){
+      status.textContent = "Ссылка скопирована. Можно вставлять в письмо.";
+      status.className = "status ok";
+    } else {
+      status.textContent = "Браузер не разрешил копирование. Выделите адрес в поле «Готовая ссылка» и скопируйте вручную (Ctrl+C или Cmd+C).";
+      status.className = "status warn";
+    }
+  }
+
+  FIELDS.forEach(f => {
+    $(f.id).addEventListener("input", () => { clearResult(); clearError(f.id); });
+  });
+
+  $("preset").addEventListener("click", () => {
+    clearResult();
+    FIELDS.forEach(f => clearError(f.id));
+    $("source").value = PRESET.source;
+    $("medium").value = PRESET.medium;
+    $("campaign").value = PRESET.campaign;
+  });
+
+  $("build").addEventListener("click", build);
+  $("copy").addEventListener("click", copyLink);
+})();
+</script>
+</body>
+</html>
